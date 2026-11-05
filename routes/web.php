@@ -14,6 +14,7 @@ Route::get('/p/{pop}', [PopController::class, 'show'])->name('pops.show');
 Route::post('/p/{pop}/members', [MemberController::class, 'store'])->name('members.store')->middleware('throttle:30,1');
 
 Route::post('/p/{pop}/expenses', [ExpenseController::class, 'store'])->name('expenses.store')->middleware('throttle:30,1');
+Route::get('/p/{pop}/expenses/{expense}/bill', [ExpenseController::class, 'bill'])->name('expenses.bill');
 Route::delete('/p/{pop}/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
 
 Route::post('/p/{pop}/settlements', [SettlementController::class, 'store'])->name('settlements.store')->middleware('throttle:30,1');

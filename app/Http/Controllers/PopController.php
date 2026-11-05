@@ -60,7 +60,13 @@ class PopController extends Controller
     {
         $members = $pop->members()->get();
         $byId = $members->keyBy('id');
-        $expenses = $pop->expenses()->with('shares')->orderByDesc('spent_on')->orderByDesc('id')->get();
+        // Don't pull the (big) photo data into the list, only whether a photo exists (bill_mime).
+        $expenses = $pop->expenses()
+            ->select(['id', 'pop_id', 'paid_by', 'title', 'amount_cents', 'bill_mime', 'spent_on', 'created_at', 'updated_at'])
+            ->with('shares')
+            ->orderByDesc('spent_on')
+            ->orderByDesc('id')
+            ->get();
         $settlements = $pop->settlements()->orderByDesc('id')->get();
 
         $result = Balances::compute(

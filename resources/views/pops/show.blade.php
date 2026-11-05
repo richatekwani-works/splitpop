@@ -111,9 +111,9 @@
             <h2 class="sec">The receipts 🧾</h2>
             @forelse ($expenses as $e)
                 <article class="card exp">
-                    @if ($e->bill_path)
-                        <a href="{{ $e->billUrl() }}" target="_blank" rel="noopener">
-                            <img class="thumb" src="{{ $e->billUrl() }}" alt="Bill photo for {{ $e->title }}" loading="lazy">
+                    @if ($e->bill_mime)
+                        <a href="{{ route('expenses.bill', [$pop, $e]) }}" target="_blank" rel="noopener">
+                            <img class="thumb" src="{{ route('expenses.bill', [$pop, $e]) }}" alt="Bill photo for {{ $e->title }}" loading="lazy">
                         </a>
                     @else
                         <div class="thumb none">🧾<small>amount only</small></div>

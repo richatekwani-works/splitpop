@@ -7,11 +7,12 @@ use App\Models\Pop;
 use App\Support\Money;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ExpenseController extends Controller
 {
+    private const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
     public function store(Request $request, Pop $pop)
     {
         $inPop = Rule::exists('members', 'id')->where('pop_id', $pop->id);
@@ -21,8 +22,8 @@ class ExpenseController extends Controller
             'amount' => 'required|numeric|min:0.01|max:10000000',
             'paid_by' => ['required', 'integer', $inPop],
             'spent_on' => 'nullable|date',
-            // the bill photo is optional: an amount on its own is fine
-            'bill' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:5120',
+            // The bill photo is optional (an amount alone is fine). 3 MB keeps us under Vercel's 4.5 MB request limit.
+            'bill' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:3072',
             'split_mode' => 'required|in:equal,custom',
             'split_with' => 'required_if:split_mode,equal|nullable|array',
             'split_with.*' => ['integer', $inPop],
@@ -61,14 +62,24 @@ class ExpenseController extends Controller
             }
         }
 
-        DB::transaction(function () use ($request, $pop, $data, $total, $shares) {
-            $path = $request->file('bill')?->store('bills', 'public');
+        // Keep the photo as base64 text inside the database row.
+        $billData = null;
+        $billMime = null;
+        if ($file = $request->file('bill')) {
+            $mime = $file->getMimeType();
+            if (in_array($mime, self::IMAGE_TYPES, true)) {
+                $billData = base64_encode(file_get_contents($file->getRealPath()));
+                $billMime = $mime;
+            }
+        }
 
+        DB::transaction(function () use ($pop, $data, $total, $shares, $billData, $billMime) {
             $expense = $pop->expenses()->create([
                 'paid_by' => (int) $data['paid_by'],
                 'title' => trim($data['title'] ?? '') ?: 'Mystery spend',
                 'amount_cents' => $total,
-                'bill_path' => $path,
+                'bill_data' => $billData,
+                'bill_mime' => $billMime,
                 'spent_on' => $data['spent_on'] ?? now()->toDateString(),
             ]);
 
@@ -77,16 +88,24 @@ class ExpenseController extends Controller
             }
         });
 
-        return redirect()->route('pops.show', $pop)->with('ok', 'Bill added. Receipts pile +1 🧾');
+        return redirect()->route('pops.show', $pop)->with('ok', 'Bill added. Receipts +1 🧾');
+    }
+
+    // Serves the stored bill photo.
+    public function bill(Pop $pop, Expense $expense)
+    {
+        abort_unless($expense->pop_id === $pop->id && $expense->bill_data, 404);
+
+        return response(base64_decode($expense->bill_data), 200, [
+            'Content-Type' => $expense->bill_mime ?: 'application/octet-stream',
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
     }
 
     public function destroy(Pop $pop, Expense $expense)
     {
         abort_unless($expense->pop_id === $pop->id, 404);
-
-        if ($expense->bill_path) {
-            Storage::disk('public')->delete($expense->bill_path);
-        }
         $expense->delete();
 
         return redirect()->route('pops.show', $pop)->with('ok', 'Bill gone. Poof 💨');
