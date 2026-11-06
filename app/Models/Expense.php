@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Expense extends Model
@@ -14,11 +13,6 @@ class Expense extends Model
         'spent_on' => 'date',
         'amount_cents' => 'integer',
     ];
-
-    public function payer(): BelongsTo
-    {
-        return $this->belongsTo(Member::class, 'paid_by');
-    }
 
     public function shares(): HasMany
     {

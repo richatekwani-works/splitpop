@@ -32,7 +32,6 @@ return new class extends Migration
             $t->foreignId('paid_by')->constrained('members')->cascadeOnDelete();
             $t->string('title', 80);
             $t->unsignedBigInteger('amount_cents');
-            $t->string('bill_path')->nullable(); // optional bill photo
             $t->date('spent_on');
             $t->timestamps();
         });

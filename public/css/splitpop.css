@@ -123,9 +123,8 @@ p { margin: .3rem 0; }
 /* expenses */
 .exp { display: grid; grid-template-columns: 84px 1fr auto; gap: 1rem; align-items: center; transition: transform .12s, box-shadow .12s; }
 .exp:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
-.thumb { width: 84px; height: 84px; object-fit: cover; border: 3px solid var(--ink); border-radius: 8px; display: block; }
+.thumb { width: 84px; height: 84px; border: 3px solid var(--ink); border-radius: 8px; display: block; }
 .thumb.none { display: grid; place-items: center; font-size: 1.8rem; background: var(--paper); line-height: 1; text-align: center; }
-.thumb.none small { font: 700 .55rem 'Space Mono', monospace; text-transform: uppercase; }
 .pills { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .45rem; }
 .pill { --c: #eee; background: var(--c); border: 2px solid var(--ink); border-radius: 6px; padding: .05rem .55rem; font: 700 .72rem 'Space Mono', monospace; }
 .exp-side { text-align: right; }
