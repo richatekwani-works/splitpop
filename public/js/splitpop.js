@@ -68,25 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     customs.forEach((i) => i.addEventListener('input', updateLeft));
     updateLeft();
 
-    // 5. Bill photo preview
-    const file = document.querySelector('input[type="file"][name="bill"]');
-    const preview = document.querySelector('[data-bill-preview]');
-    const dropText = document.querySelector('[data-drop-text]');
-    if (file && preview) {
-        file.addEventListener('change', () => {
-            const f = file.files && file.files[0];
-            if (!f) {
-                preview.hidden = true;
-                if (dropText) dropText.textContent = '📸 Tap to add a bill photo';
-                return;
-            }
-            preview.src = URL.createObjectURL(f);
-            preview.hidden = false;
-            if (dropText) dropText.textContent = '✅ ' + f.name;
-        });
-    }
-
-    // 6. Default the date to the visitor's today (their timezone, not the server's)
+    // 5. Default the date to the visitor's today (their timezone, not the server's)
     const date = document.querySelector('[data-today]');
     if (date && !date.value) {
         const d = new Date();

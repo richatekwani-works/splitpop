@@ -29,7 +29,7 @@
         <div class="col-main">
 
             {{-- ADD A BILL --}}
-            <form method="POST" action="{{ route('expenses.store', $pop) }}" enctype="multipart/form-data" class="card mint">
+            <form method="POST" action="{{ route('expenses.store', $pop) }}" class="card mint">
                 @csrf
                 <h2>Add a bill 🧾</h2>
 
@@ -61,13 +61,6 @@
                         <input class="field" id="spent_on" name="spent_on" type="date" value="{{ old('spent_on') }}" data-today>
                     </div>
                 </div>
-
-                <span class="lbl">Bill photo <span class="opt">(optional, an amount alone is totally fine)</span></span>
-                <label class="drop">
-                    <input type="file" name="bill" accept="image/png,image/jpeg,image/webp,image/gif">
-                    <span data-drop-text>📸 Tap to add a bill photo</span>
-                    <img data-bill-preview hidden alt="Bill preview">
-                </label>
 
                 <span class="lbl">How to split?</span>
                 <div class="chips">
@@ -111,13 +104,7 @@
             <h2 class="sec">The receipts 🧾</h2>
             @forelse ($expenses as $e)
                 <article class="card exp">
-                    @if ($e->bill_mime)
-                        <a href="{{ route('expenses.bill', [$pop, $e]) }}" target="_blank" rel="noopener">
-                            <img class="thumb" src="{{ route('expenses.bill', [$pop, $e]) }}" alt="Bill photo for {{ $e->title }}" loading="lazy">
-                        </a>
-                    @else
-                        <div class="thumb none">🧾<small>amount only</small></div>
-                    @endif
+                    <div class="thumb none">🧾</div>
 
                     <div class="exp-body">
                         <h3>{{ $e->title }}</h3>

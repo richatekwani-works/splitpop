@@ -3,7 +3,7 @@
 @section('content')
     <section class="hero">
         <h1>Split the bill.<br><span class="hl">Skip the drama.</span></h1>
-        <p class="lead">Snap the bill (or just type the amount), say who paid, and SplitPop does the maths nobody wants to do. No sign-up. Just a link.</p>
+        <p class="lead">Type the amount, say who paid, and SplitPop does the maths nobody wants to do. No sign-up. Just a link.</p>
     </section>
 
     <div class="home-grid">
@@ -61,7 +61,7 @@
             <div class="card sky sticker s3">
                 <span class="num">3</span>
                 <h3>Dump the bills</h3>
-                <p>Upload a photo or only the amount. Split equally or by exact amounts.</p>
+                <p>Type the amount and who paid. Split equally or by exact amounts.</p>
             </div>
             <div class="card pink sticker s4">
                 <span class="num">4</span>

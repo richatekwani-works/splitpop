@@ -3,7 +3,7 @@
 A cute, quirky Laravel app for splitting bills with friends.
 
 - **No login.** Make a "pop" (a group) and you get a secret link like `/p/k3j9x0ab`. Share it; anyone with the link can add bills.
-- **Bill photo is optional.** Upload a picture of the bill *or* just type the amount.
+- **Just type the amount.** Each bill has a title, an amount, who paid and who it is split with.
 - **Who paid + who it's split with.** Split equally, or type exact custom amounts per person.
 - **Balances + settle-up.** Shows who gets back / owes, and the fewest payments needed to even out. Tap "Paid ✅" to record a payment.
 - Money is stored as integer paise/cents, so there are no rounding drifts (₹10.00 / 3 → 3.34 + 3.33 + 3.33).
@@ -50,15 +50,13 @@ No Tailwind/Vite/npm build is needed: it's plain CSS, so it works straight after
 ## Good to know
 
 - **The link is the password.** Anyone who has it can add or delete bills in that pop. That's the trade-off of "no login"; if you later want more safety, add an optional PIN on the pop.
-- Bill photos: jpg/png/webp/gif, max 3 MB, stored in the database (so `storage:link` is no longer needed).
 - Friends added later only share bills created after they join.
 - Create/add actions are rate-limited (`throttle`) to cut spam.
 
 ## Deploying on Vercel (free)
 
 Vercel has no permanent disk and no built-in database, so this version:
-- keeps **bill photos inside the database** (max 3 MB each; Vercel rejects requests over 4.5 MB),
-- needs a **free Postgres database** (Neon), set through environment variables,
+- needs a **free Postgres database** (Neon or Supabase), set through environment variables,
 - uses `vercel.json`, `api/index.php` and `.vercelignore` (already included) to run Laravel with the community `vercel-php` runtime (PHP 8.4).
 
 Environment variables to set in Vercel (Project, Settings, Environment Variables):
@@ -74,7 +72,7 @@ Environment variables to set in Vercel (Project, Settings, Environment Variables
 | `CACHE_STORE` | `array` |
 | `QUEUE_CONNECTION` | `sync` |
 | `DB_CONNECTION` | `pgsql` |
-| `DB_URL` | the Neon connection string (ends with `?sslmode=require`) |
+| `DB_URL` | your Postgres connection string (ends with `?sslmode=require`) |
 
 Run `php artisan migrate --force` once from your laptop against the Neon database (not on Vercel).
 

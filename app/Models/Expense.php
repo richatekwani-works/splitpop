@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Expense extends Model
 {
-    protected $fillable = ['pop_id', 'paid_by', 'title', 'amount_cents', 'bill_data', 'bill_mime', 'spent_on'];
+    protected $fillable = ['pop_id', 'paid_by', 'title', 'amount_cents', 'spent_on'];
 
     protected $casts = [
         'spent_on' => 'date',
